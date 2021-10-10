@@ -79,8 +79,9 @@ app.post("/api/addrss", async (req, res) => {
     const isData = await Rss.findOne({title});
     if(isData){
       const newData = await Rss.findOneAndReplace({
-        title,
-        rssArray,
+        title
+      }, {
+        title, rssArray
       })
       if(newData){
         return res.json({ status: "OK", message: "Data updated on db" });
