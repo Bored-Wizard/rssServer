@@ -76,6 +76,21 @@ app.post("/api/addrss", async (req, res) => {
   const { title, rssArray, token } = req.body;
   try {
     const verify = jwt.verify(token, JWTSEC);
+    const isData = await Rss.findOne({title});
+    if(isData){
+      const newData = await Rss.findOneAndReplace({
+        title,
+        rssArray,
+      })
+      if(newData){
+        return res.json({ status: "OK", message: "Data updated on db" });
+      }else{
+        return res.json({
+          status: "error",
+          message: "Unable to update the data on db!!!",
+        });
+      }
+    }
     const dbres = await Rss.create({
       title,
       rssArray,
@@ -90,6 +105,10 @@ app.post("/api/addrss", async (req, res) => {
     }
   } catch (e) {
     console.log(e);
+    return res.json({
+      status: "error",
+      message: "Unable to add the data to db!!!",
+    });
   }
 
   // }
